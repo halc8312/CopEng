@@ -113,14 +113,73 @@
   }
 
   function resetAllProgress() {
-    if (confirm('学習進捗をすべてリセットしますか？')) {
+    showConfirmDialog('学習進捗をすべてリセットしますか？', () => {
       progress = {};
       saveProgress();
       updateCardView();
       updateListView();
       updateProgressView();
       closeMenu();
-    }
+    });
+  }
+
+  // ============================================================================
+  // Custom Confirm Dialog (Accessible)
+  // ============================================================================
+  function showConfirmDialog(message, onConfirm) {
+    // Create dialog overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'dialog-overlay';
+    overlay.setAttribute('role', 'presentation');
+
+    // Create dialog
+    const dialog = document.createElement('div');
+    dialog.className = 'confirm-dialog';
+    dialog.setAttribute('role', 'alertdialog');
+    dialog.setAttribute('aria-modal', 'true');
+    dialog.setAttribute('aria-labelledby', 'confirm-message');
+
+    dialog.innerHTML = `
+      <p id="confirm-message" class="confirm-message">${escapeHtml(message)}</p>
+      <div class="confirm-actions">
+        <button class="confirm-btn confirm-cancel" type="button">キャンセル</button>
+        <button class="confirm-btn confirm-ok" type="button">OK</button>
+      </div>
+    `;
+
+    overlay.appendChild(dialog);
+    document.body.appendChild(overlay);
+
+    // Focus management
+    const cancelBtn = dialog.querySelector('.confirm-cancel');
+    const okBtn = dialog.querySelector('.confirm-ok');
+    cancelBtn.focus();
+
+    // Event handlers
+    const closeDialog = () => {
+      document.body.removeChild(overlay);
+    };
+
+    cancelBtn.addEventListener('click', closeDialog);
+    okBtn.addEventListener('click', () => {
+      closeDialog();
+      onConfirm();
+    });
+
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) {
+        closeDialog();
+      }
+    });
+
+    // Handle escape key
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') {
+        closeDialog();
+        document.removeEventListener('keydown', handleEscape);
+      }
+    };
+    document.addEventListener('keydown', handleEscape);
   }
 
   // ============================================================================
@@ -425,7 +484,8 @@
         goToNextCard();
         break;
       case ' ':
-        if (document.activeElement === elements.flashcard || document.activeElement === document.body) {
+        // Only flip card when flashcard is focused or no interactive element is focused
+        if (document.activeElement === elements.flashcard) {
           e.preventDefault();
           flipCard();
         }

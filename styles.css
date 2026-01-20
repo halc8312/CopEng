@@ -233,7 +233,7 @@ ul {
 }
 
 .menu-item.active {
-  background-color: var(--color-primary);
+  background-color: #1e40af;
   color: white;
 }
 
@@ -882,4 +882,71 @@ ul {
   .card-inner {
     transition: none;
   }
+}
+
+/* ==========================================================================
+   Custom Confirm Dialog
+   ========================================================================== */
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 300;
+  padding: var(--spacing-md);
+}
+
+.confirm-dialog {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  max-width: 320px;
+  width: 100%;
+  box-shadow: var(--shadow-lg);
+}
+
+.confirm-message {
+  margin-bottom: var(--spacing-lg);
+  text-align: center;
+  line-height: 1.6;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.confirm-btn {
+  flex: 1;
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  transition: all var(--transition-fast);
+}
+
+.confirm-cancel {
+  background: var(--color-border);
+  color: var(--color-text);
+}
+
+.confirm-cancel:hover,
+.confirm-cancel:focus-visible {
+  background: #cbd5e1;
+}
+
+.confirm-ok {
+  background: var(--color-danger);
+  color: white;
+}
+
+.confirm-ok:hover,
+.confirm-ok:focus-visible {
+  background: var(--color-danger-dark);
+}
+
+.confirm-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
