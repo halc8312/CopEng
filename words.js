@@ -1,7 +1,7 @@
 /**
  * 英単語データ
  * 基本的な英単語50語（日常会話・ビジネス・学習向け）をベースに
- * 6000語以上に拡張して提供
+ * 辞書データの追加単語で6000語以上に拡張して提供
  */
 const BASE_WORDS = [
   {
@@ -306,7 +306,10 @@ const BASE_WORDS = [
   }
 ];
 
-const WORDS_DATA = (() => {
+const PLACEHOLDER_MEANING = '辞書データ (意味未登録)';
+const PLACEHOLDER_EXAMPLE = '例文未登録';
+
+function buildWordsData() {
   const targetCount = 6000;
 
   if (BASE_WORDS.length >= targetCount) {
@@ -314,17 +317,25 @@ const WORDS_DATA = (() => {
   }
 
   const expanded = [...BASE_WORDS];
-  const extraCount = targetCount - expanded.length;
-
-  for (let i = 1; i <= extraCount; i += 1) {
-    const paddedIndex = String(i).padStart(4, '0');
-    expanded.push({
-      id: expanded.length + 1,
-      word: `extra-${paddedIndex}`,
-      meaning: `追加単語 ${i}`,
-      example: `This is additional word ${i}.`
-    });
+  if (typeof EXTRA_WORDS === 'undefined') {
+    console.warn('Extra words data not found');
+    return expanded;
   }
+  const extraWords = EXTRA_WORDS;
+  const extraNeeded = targetCount - expanded.length;
+  const extraSlice = extraWords.slice(0, extraNeeded);
+  const startId = expanded.length + 1;
+
+  extraSlice.forEach((word, index) => {
+    expanded.push({
+      id: startId + index,
+      word,
+      meaning: PLACEHOLDER_MEANING,
+      example: PLACEHOLDER_EXAMPLE
+    });
+  });
 
   return expanded;
-})();
+}
+
+const WORDS_DATA = buildWordsData();
