@@ -1,6 +1,6 @@
 /**
  * 英単語データ
- * 基本的な英単語50語（日常会話・ビジネス・学習向け）
+ * 基本的な英単語50語（日常会話・ビジネス・学習向け）をベースに
  * 6000語以上に拡張して提供
  */
 const BASE_WORDS = [
@@ -314,23 +314,16 @@ const WORDS_DATA = (() => {
   }
 
   const expanded = [...BASE_WORDS];
-  let nextId = expanded.length + 1;
-  let round = 2;
+  const extraCount = targetCount - expanded.length;
 
-  while (expanded.length < targetCount) {
-    for (const base of BASE_WORDS) {
-      if (expanded.length >= targetCount) {
-        break;
-      }
-
-      expanded.push({
-        id: nextId++,
-        word: `${base.word} (${round})`,
-        meaning: base.meaning,
-        example: base.example
-      });
-    }
-    round += 1;
+  for (let i = 1; i <= extraCount; i += 1) {
+    const paddedIndex = String(i).padStart(4, '0');
+    expanded.push({
+      id: expanded.length + 1,
+      word: `extra-${paddedIndex}`,
+      meaning: `追加単語 ${i}`,
+      example: `This is additional word ${i}.`
+    });
   }
 
   return expanded;
