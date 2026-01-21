@@ -1,8 +1,9 @@
 /**
  * 英単語データ
- * 基本的な英単語50語（日常会話・ビジネス・学習向け）
+ * 基本的な英単語50語（日常会話・ビジネス・学習向け）をベースに
+ * 辞書データの追加単語で6000語以上に拡張して提供
  */
-const WORDS_DATA = [
+const BASE_WORDS = [
   {
     id: 1,
     word: "accomplish",
@@ -304,3 +305,37 @@ const WORDS_DATA = [
     example: "Let me summarize the main points."
   }
 ];
+
+const PLACEHOLDER_MEANING = '辞書データ (意味未登録)';
+const PLACEHOLDER_EXAMPLE = '例文未登録';
+
+function buildWordsData() {
+  const targetCount = 6000;
+
+  if (BASE_WORDS.length >= targetCount) {
+    return BASE_WORDS;
+  }
+
+  const expanded = [...BASE_WORDS];
+  if (typeof EXTRA_WORDS === 'undefined') {
+    console.warn('Extra words data not found');
+    return expanded;
+  }
+  const extraWords = EXTRA_WORDS;
+  const extraNeeded = targetCount - expanded.length;
+  const extraSlice = extraWords.slice(0, extraNeeded);
+  const startId = expanded.length + 1;
+
+  extraSlice.forEach((word, index) => {
+    expanded.push({
+      id: startId + index,
+      word,
+      meaning: PLACEHOLDER_MEANING,
+      example: PLACEHOLDER_EXAMPLE
+    });
+  });
+
+  return expanded;
+}
+
+const WORDS_DATA = buildWordsData();
